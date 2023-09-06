@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: heimdall
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: heimdall
+  template:
+    metadata:
+      labels:
+        app: heimdall
+    spec:
+      containers:
+        - name: heimdall
+          image: linuxserver/heimdall
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/heimdall
+          env:
+            - name: HEIMDALL_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: heimdall-admin-secret
+                  key: admin-password
+          ports:
+            - containerPort: 80
+      volumes:
+        - name: config-volume
+          configMap:
+            name: heimdall-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: heimdall-service
+  namespace: monitoring
+spec:
+  type: NodePort
+  selector:
+    app: heimdall
+  ports:
+    - protocol: TCP
+      port: 80
+      nodePort: 30880

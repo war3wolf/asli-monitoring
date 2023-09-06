@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: heimdall-config
+  namespace: monitoring
+data:
+  heimdall.yaml: |
+    pg:
+      host: 10.111.13.21
+      port: 5432
+      user: heimdall
+      password: VzNsYzBtM3QwaDNsbA==
