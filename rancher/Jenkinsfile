@@ -1,41 +1,31 @@
 pipeline {
     agent any
-    
+    environment {
+        RANCHER_URL = 'https://rancher.server/'  // Replace with your Rancher URL
+        RANCHER_ACCESS_KEY = 'token-xmf6q'
+        RANCHER_SECRET_KEY = '7btxpnfgxg6dd6z7m59nsf5p8nz7lz79lmf745cgf7r8ksmt5p6ssr'
+        CLUSTER_ID = 'aslirid-cluster'  // Replace with your cluster ID
+        NODE_TEMPLATE_ID = 'default-node-template-ubuntu'  // Replace with your node template ID
+    }
     stages {
-        stage('Add Worker Node to Rancher Cluster') {
+        stage('Create Worker Node') {
             steps {
                 script {
-                    def rancherUrl = 'https://rancher.server/v3/clusters' // Replace with your Rancher URL
-                    def apiKey = 'token-sxpzx'
-                    def apiSecret = 'p48sv8lxkxx2rkgvq7bg7brvslgk68fgz28sjfhgm7plnc5ms6xmdc'
-                    def clusterID = 'aslirid-cluster' // Replace with your Rancher cluster ID
-                    def nodeTemplateName = 'default-node-template-ubuntu' // Replace with your node template name
-                    def nodeConfig = """
-                        {
-                            "hostnamePrefix": "	aslirid-worker",
-                            "worker": true,
-                            "etcd": true,
-                            "controlPlane": true,
-                            "clusterId": "${clusterID}",
-                            "nodeTemplateName": "${nodeTemplateName}"
-                        }
+                    sh """
+                        rancher login $RANCHER_URL --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY
+                        rancher clusters get $CLUSTER_ID > cluster.yml
+                        rancher nodes add -c cluster.yml --template $NODE_TEMPLATE_ID
                     """
-                    
-                    def response = httpRequest(
-                        url: "${rancherUrl}/${clusterID}/nodes",
-                        authentication: 'rancher-credential',
-                        usernamePasswordVariable: "${apiKey}",
-                        httpMode: 'POST',
-                        requestBody: 'nodeConfig'
-                    )
-
-                    if (response.status == 201) {
-                        echo "Worker node addition request successful."
-                    } else {
-                        error "Worker node addition request failed. HTTP status code: ${response.status}"
-                    }
                 }
             }
+        }
+    }
+    post {
+        success {
+            echo 'Add worker node on asliri-cluster successfully'
+        }
+        failure {
+            echo 'Add worker node on asliri-cluster failed'
         }
     }
 }

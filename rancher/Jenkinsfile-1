@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Add Worker Node to Rancher Cluster') {
+            steps {
+                script {
+                    def rancherUrl = 'https://rancher.server/v3/clusters' // Replace with your Rancher URL
+                    def clusterID = 'aslirid-cluster' // Replace with your Rancher cluster ID
+                    def nodeTemplateName = 'default-node-template-ubuntu' // Replace with your node template name
+                    def nodeConfig = """
+                        {
+                            "hostnamePrefix": "	aslirid-worker",
+                            "worker": true,
+                            "etcd": true,
+                            "controlPlane": true,
+                            "clusterId": "${clusterID}",
+                            "nodeTemplateName": "${nodeTemplateName}"
+                        }
+                    """
+                    
+                    def response = httpRequest(
+                        acceptType: 'APPLICATION_JSON',
+                        contentType: 'APPLICATION_JSON',
+                        httpMode: 'POST',
+                        url: rancherUrl,
+                        requestBody: nodeConfig,
+                        authentication: [
+                            credentialsId: 'rancher-credential' // Use Jenkins credentials for API Key
+                        ]
+                    )
+
+                    if (response.status == 201) {
+                        echo "Worker node addition request successful."
+                    } else if (response.status == 401) {
+                        error "HTTP request failed with Unauthorized (401). Check your credentials."
+                    } else {
+                        error "Worker node addition request failed. HTTP status code: ${response.status}"
+                    }
+                }
+            }
+        }
+    }
+}
