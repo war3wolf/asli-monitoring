@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Scale Up Worker Nodes') {
+            steps {
+                script {
+                    def rancherServerURL = 'https://devrancher.asliri.id/'
+                    def rancherAPIToken = 'token-fsgwq:8m5jp8x56lp4kl8hhjp4ckfgzngfdrvbc79l7clfr6th69tgbkwprb'
+                    def clusterID = 'aslirid-cluster-dev'
+                    def desiredNodeCount = 2  // Replace with the desired number of nodes
+
+                    // Authenticate with Rancher API
+                    def authHeader = 'Authorization: Bearer ' + rancherAPIToken
+                    def authCurlCommand = "curl -k -X POST -H '${authHeader}' ${rancherServerURL}/v3/clusters/${clusterID}/scaledownpolicies?action=scaleup&desiredNodeCount=${desiredNodeCount}"
+                    sh authCurlCommand
+                }
+            }
+        }
+    }
+}

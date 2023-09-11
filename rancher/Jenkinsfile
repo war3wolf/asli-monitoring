@@ -5,17 +5,23 @@ pipeline {
         RANCHER_ACCESS_KEY = 'token-fsgwq'
         RANCHER_SECRET_KEY = '8m5jp8x56lp4kl8hhjp4ckfgzngfdrvbc79l7clfr6th69tgbkwprb'
         CLUSTER_ID = 'aslirid-cluster-dev'  // Replace with your cluster ID
+        PROJECT_NAME = '1'
         NODE_TEMPLATE_ID = 'rancher-ubuntu-template'  // Replace with your node template ID
     }
     stages {
         stage('Create Worker Node') {
             steps {
                 script {
-                    sh """
+                    sh '''
+                        echo "Rancher login"
                         rancher login $RANCHER_URL --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY
+                        echo "Rancher get cluster"
                         rancher clusters get $CLUSTER_ID > cluster.yml
-                        rancher nodes add -c cluster.yml --template $NODE_TEMPLATE_ID
-                    """
+                        echo "Select Project Name"
+                        rancher context switch ${PROJECT_NAME}
+                        echo "Add nodes"
+                        rancher nodes add -c cluster.yml --template $NODE_TEMPLATE_ID --etcd --controlplane --worker
+                    '''
                 }
             }
         }
