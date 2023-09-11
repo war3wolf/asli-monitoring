@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: monitoring
+data:
+  alertmanager.yml: |
+    route:
+      receiver: 'default-receiver'
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+    
+    receivers:
+    - name: 'default-receiver'
+      webhook_configs:
+      - url: 'http://alertmanager-webhook-service:5001/webhook'
+
+    - name: 'telegram'
+      webhook_configs:
+      - url: 'https://api.telegram.org/botYOUR_BOT_API_TOKEN/sendMessage?chat_id=@yourchannelname'
+        http_config:
+          bearer_token: 'YOUR_BOT_API_TOKEN'
+        send_resolved: true
+    
+    - name: 'jenkins'
+      webhook_configs:
+      - url: 'http://jenkins-server:port/generic-webhook-trigger/invoke?token=my-token'

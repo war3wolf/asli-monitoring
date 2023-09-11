@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+    environment {
+        RANCHER_URL = 'https://your-rancher-url.com'  // Replace with your Rancher URL
+        RANCHER_ACCESS_KEY = 'your-access-key'
+        RANCHER_SECRET_KEY = 'your-secret-key'
+        CLUSTER_ID = 'your-cluster-id'  // Replace with your cluster ID
+    }
+    stages {
+        stage('Create Worker Node') {
+            steps {
+                script {
+                    sh """
+                        rancher login $RANCHER_URL --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY
+                        rancher clusters get $CLUSTER_ID > cluster.yml
+                        rancher nodes add -c cluster.yml --etcd --controlplane --worker
+                    """
+                }
+            }
+        }
+    }
+    post {
+        success {
+            // Additional steps to execute on success
+        }
+        failure {
+            // Handle failure or cleanup steps if needed
+        }
+    }
+}

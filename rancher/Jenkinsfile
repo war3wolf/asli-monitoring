@@ -1,11 +1,11 @@
 pipeline {
     agent any
     environment {
-        RANCHER_URL = 'https://rancher.server/'  // Replace with your Rancher URL
-        RANCHER_ACCESS_KEY = 'token-xmf6q'
-        RANCHER_SECRET_KEY = '7btxpnfgxg6dd6z7m59nsf5p8nz7lz79lmf745cgf7r8ksmt5p6ssr'
-        CLUSTER_ID = 'aslirid-cluster'  // Replace with your cluster ID
-        NODE_TEMPLATE_ID = 'default-node-template-ubuntu'  // Replace with your node template ID
+        RANCHER_URL = 'https://devrancher.asliri.id/'  // Replace with your Rancher URL
+        RANCHER_ACCESS_KEY = 'token-fsgwq'
+        RANCHER_SECRET_KEY = '8m5jp8x56lp4kl8hhjp4ckfgzngfdrvbc79l7clfr6th69tgbkwprb'
+        CLUSTER_ID = 'aslirid-cluster-dev'  // Replace with your cluster ID
+        NODE_TEMPLATE_ID = 'rancher-ubuntu-template'  // Replace with your node template ID
     }
     stages {
         stage('Create Worker Node') {

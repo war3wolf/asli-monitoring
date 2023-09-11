@@ -1,0 +1,21 @@
+# kibana-configmap.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kibana-config
+  namespace: monitoring
+data:
+  kibana.yml: |
+    
+    server.host: "0.0.0.0" # Bind to all network interfaces
+    server.name: "kibana"
+    elasticsearch.hosts: ["http://10.111.13.14:30920/"] # Replace with your Elasticsearch service name
+
+    kibana.index: ".kibana_7.17.1"
+
+    xpack.encryptedSavedObjects.encryptionKey: 33d3d7f3d08d00c1f63ae6d28684066d
+    xpack.reporting.encryptionKey: eb5dfaece3eca0c61cc065e281cecb2d
+    xpack.security.encryptionKey: 7d36557d821346de0761876a9b4bba03
+
+    # Add any other Kibana configuration settings as needed

@@ -1,26 +1,24 @@
-version: "3.3"
+version: '3.3'
 services:
-  rancher:
-    privileged: true
-    restart: always
-    container_name: rancher
-    ports:
-      - "80:80"
-      - "443:443"
+    rancher:
+        privileged: true
+        restart: always
+        container_name: rancher
+        command: --no-cacerts
+        ports:
+            - '80:80'
+            - '443:443'
 
-    image: rancher/rancher:latest
+        image: rancher/rancher:latest
 
-    environment:
-      - CATTLE_SYSTEM_CATALOG=bundled     
-      - CATTLE_HTTPS_ENABLED=true
-      - CATTLE_HTTPS_LISTEN_PORT=443
-      - HTTPS_CERT_PATH=/etc/rancher/ssl/asliri-id-23-24.pem
-      - HTTPS_KEY_PATH=/etc/rancher/ssl/asliri-id-23-24-key.pem
-      - CATTLE_TLS_MINIMUM_SUPPORTED_VERSION=${CATTLE_TLS_MINIMUM_SUPPORTED_VERSION}
-      - CATTLE_BOOTSTRAP_PASSWORD=${CATTLE_BOOTSTRAP_PASSWORD}
-     
-    hostname: rancher.asliri.id
+        environment:
+          - CATTLE_BOOTSTRAP_PASSWORD=${CATTLE_BOOTSTRAP_PASSWORD}
+          
+        # Specify your domain name
+        hostname: devrancher.asliri.id
 
-    volumes:
-      - ./data:/var/lib/rancher
-      - ./certs:/etc/rancher/ssl
+        volumes:
+          - ./data:/var/lib/rancher
+          - ./certs:/etc/rancher/ssl
+          - ./certs/asliri-id-23-24.crt:/etc/rancher/ssl/cert.pem
+          - ./certs/asliri-id-23-24.key:/etc/rancher/ssl/key.pem

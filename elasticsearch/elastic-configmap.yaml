@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elasticsearch-config
+  namespace: monitoring
+data:
+  elasticsearch.yml: |
+    network.host: 0.0.0.0
+    cluster.name: "aslirid-cluster"
+    node.name: ${HOSTNAME}
+    discovery.seed_hosts: "elasticsearch-0.elasticsearch.default.svc.cluster.local,elasticsearch-1.elasticsearch.default.svc.cluster.local,elasticsearch-2.elasticsearch.default.svc.cluster.local"
+    cluster.initial_master_nodes: "elasticsearch-0,elasticsearch-1,elasticsearch-2"
+    node.master: true
+    node.data: true
+    node.ingest: true
+    xpack.security.enabled: false # Disable security for simplicity

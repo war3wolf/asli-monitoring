@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+  namespace: monitoring
+spec:
+  serviceName: elasticsearch
+  replicas: 2  # Set the desired number of Elasticsearch nodes
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:7.17.1  # Use the desired Elasticsearch version
+          ports:
+            - containerPort: 9200  # Elasticsearch HTTP port
+            - containerPort: 9300  # Elasticsearch TCP port
+          resources:
+            limits:
+              memory: 2Gi  # Adjust resource limits as needed
+            requests:
+              memory: 1Gi  # Adjust resource requests as needed
+          env:
+            - name: discovery.type
+              value: "single-node"  # For a single-node Elasticsearch cluster
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-service
+  namespace: monitoring
+spec:
+  type: NodePort
+  selector:
+    app: elasticsearch
+  ports:
+    - name: http
+      protocol: TCP
+      port: 9200
+      nodePort: 30920
+    - name: transport
+      protocol: TCP
+      port: 9300
+      nodePort: 30930

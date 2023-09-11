@@ -1,0 +1,23 @@
+#cloud-config
+mounts:
+  - - 'mount /dev/sr0 /mnt'
+    - '/home'
+    - 'ext4'
+    - 'defaults,nofail,discard'
+    - '0'
+    - '2'
+packages:
+  - zsh
+  - git
+users:
+  - name: ubuntu
+    groups: sudo
+    shell: /bin/zsh
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    ssh-authorized-keys:
+      - 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDfVKJ8RQ4AfPY1uXiZ+fVACvJ4UycZPnCltdXtb9DFOL2Sahrw1dnIlb1cpfu+PWDB3nqduuak3OtYZCgONajuygARVPoS7nFBqrCaZqEbwcG8HGoLNHknQhCyVMGpZrIbz6gSZKg7KSFYdDFRSor9jdqvMac4Ht2doLhMpP5hfGdWYn6fa4wFygGUV2y1QkcwA/IQDuMzUXZxzsU7ucnv8ZT+W4Ch1An31mQipFQ/yrKWq7TqcKVusClRI0nwmEWy1T7OdcSZF3BHfqHNMMpGtUe0QNmcr5+K1pgUoirc/GSmHVY31u0aCBeMvDYdyul1j7+F+b0mwFd1TykVkl+7zx2NrKnqtFve5oOb9d/PcMEHctXRQ3+03KoUnKAzT2B0En7/qrKxUJFfpg+uFhr6KVBgT7gSwB5W09fQW8ExrWjYNellNXPednHWiNf7IZ5PkSAWSWoyih/PW+Y+jwLnPCbmBwd5pudJnoKW5ApPnaAMsZyl5lNnLSEwqIDbSxM= rancher@rancher'
+runcmd:
+  # Secure SSHD
+  - [ sed, -i, -e, 's/^PermitRootLogin yes/PermitRootLogin no/', '/etc/ssh/sshd_config' ]
+  - [ service, sshd, restart]
+  - [ rm, -f, /root/.ssh/authorized_keys ]
