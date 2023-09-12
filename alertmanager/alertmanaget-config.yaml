@@ -22,7 +22,4 @@ data:
         http_config:
           bearer_token: 'YOUR_BOT_API_TOKEN'
         send_resolved: true
-    
-    - name: 'jenkins'
-      webhook_configs:
-      - url: 'http://jenkins-server:port/generic-webhook-trigger/invoke?token=my-token'
+

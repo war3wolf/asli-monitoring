@@ -10,7 +10,7 @@ data:
     
     server.host: "0.0.0.0" # Bind to all network interfaces
     server.name: "kibana"
-    elasticsearch.hosts: ["http://10.111.13.14:30920/"] # Replace with your Elasticsearch service name
+    elasticsearch.hosts: ["https://dev-elastic.asliri.id/"] # Replace with your Elasticsearch service name
 
     kibana.index: ".kibana_7.17.1"
 

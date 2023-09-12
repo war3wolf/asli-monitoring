@@ -26,7 +26,7 @@ spec:
             - containerPort: 5601
           env:
             - name: ELASTICSEARCH_URL
-              value: http://10.111.13.14:30920/ # Replace with your Elasticsearch service name
+              value: https://dev-elastic.asliri.id/ # Replace with your Elasticsearch service name
       volumes:
           - name: kibana-config
             configMap:
@@ -41,11 +41,11 @@ metadata:
   name: kibana-service
   namespace: monitoring
 spec:
-  type: NodePort
+  #type: NodePort
   selector:
     app: kibana
   ports:
     - protocol: TCP
       port: 5601
-      nodePort: 30561
+      targetPort: 5601
   

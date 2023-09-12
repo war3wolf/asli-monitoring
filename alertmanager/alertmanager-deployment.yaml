@@ -39,10 +39,10 @@ metadata:
   name: alertmanager-service
   namespace: monitoring
 spec:
-  type: NodePort
+  #type: NodePort
   ports:
     - name: manageralert 
       port: 9093
-      nodePort: 30993
+      targetPort: 9093
   selector:
     app: alertmanager
